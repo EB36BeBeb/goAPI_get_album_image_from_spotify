@@ -1,6 +1,6 @@
 # API for AWS to get album cover image from spotify
 
-This API is used for the `spotifycover.ebeb.be` which is to build `N x N` sized grid image using album images of the track.
+This API is used for the [spotifycover.ebeb.be](https://spotifycover.ebeb.be) which is to build `N x N` sized grid image using album images of the track.
 
 Supports using `playlist` and `tracks`
 
