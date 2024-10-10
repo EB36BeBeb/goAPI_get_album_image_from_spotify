@@ -24,9 +24,9 @@ type RequestBody struct {
 }
 
 type ResponseBody struct {
-	Status  int
-	Message string
-	Urls    []string
+	Status  int      `json:"status"`
+	Message string   `json:"message"`
+	Urls    []string `json:"urls"`
 }
 
 func auth() string {
@@ -314,7 +314,7 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	for _, url := range body.Urls {
 		singleId := extractSpotifyObjectID(url, body.Type)
 		if singleId == url {
-			return buildResponse(400, "Invalid Url included : "+url, []string{}), nil
+			return buildResponse(400, "Invalid Url included : ", []string{url}), nil
 		}
 		ids = append(ids, singleId)
 	}
@@ -325,15 +325,15 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 		res, err := getPlaylist(ids[0], accessToken)
 		if err != nil {
 			fmt.Println(err)
-			return buildResponse(400, "Failed to load playlist info. Please check if playlist url valid. : "+ids[0], []string{}), err
+			return buildResponse(400, "Failed to load playlist info. Please check if playlist url valid. : ", []string{ids[0]}), err
 		}
 		fmt.Println(res)
-		if len(res) < body.Size*body.Size {
+		if len(res) < body.Size {
 			return buildResponse(400, "Playlist is too short", []string{}), nil
 		}
-		result := make([]string, body.Size*body.Size)
+		result := make([]string, body.Size)
 		perm := rand.Perm(len(res))
-		for i, v := range perm[:body.Size*body.Size] {
+		for i, v := range perm[:body.Size] {
 			result[i] = res[v]
 		}
 		return buildResponse(200, "Done", result), nil
@@ -346,7 +346,7 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 			return buildResponse(400, "Failed to load track info. Please check if track url valid.", []string{}), err
 		}
 		fmt.Println(res)
-		if len(res) < body.Size*body.Size {
+		if len(res) < body.Size {
 			return buildResponse(400, "Not enough tracks", []string{}), nil
 		}
 		return buildResponse(200, "Done", res), nil
